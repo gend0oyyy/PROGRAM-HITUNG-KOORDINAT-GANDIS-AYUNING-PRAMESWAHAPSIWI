@@ -1,0 +1,220 @@
+ <!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hitung Koordinat Titik P</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#eef3f6;--card:#fbfdfe;--ink:#14283c;--mute:#5b6e80;--line:#cbd6df;--grid:#dde7ee;--acc:#0b6e6e;--accsoft:#d5ecec;--p:#d9480f;--ok:#12703f;--bad:#b42318;--inbg:#fff;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a24;--card:#16232f;--ink:#e3ecf3;--mute:#93a6b7;--line:#2c3e4e;--grid:#1f3040;--acc:#5fc4c0;--accsoft:#173b3c;--p:#ff8a5c;--ok:#5fd29a;--bad:#ff8a80;--inbg:#0f1a24}}
+:root[data-theme="dark"]{--bg:#0f1a24;--card:#16232f;--ink:#e3ecf3;--mute:#93a6b7;--line:#2c3e4e;--grid:#1f3040;--acc:#5fc4c0;--accsoft:#173b3c;--p:#ff8a5c;--ok:#5fd29a;--bad:#ff8a80;--inbg:#0f1a24}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mono,input,td.v{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+main{max-width:1080px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.6rem;line-height:1.2;margin:0 0 4px;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--mute);margin:0 0 20px;max-width:62ch}
+h2{font-size:1rem;margin:0 0 12px;font-weight:600}
+.layout{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:16px;align-items:start}
+@media (max-width:820px){.layout{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:16px}
+.stack{display:grid;gap:16px}
+.row2,.row3{display:grid;gap:10px}
+.row2{grid-template-columns:1fr 1fr}.row3{grid-template-columns:1fr 1fr 1fr}
+label.f{display:block;font-size:.8rem;color:var(--mute)}
+input{width:100%;margin-top:3px;padding:8px 9px;font-size:.95rem;color:var(--ink);background:var(--inbg);border:1px solid var(--line);border-radius:5px}
+input:focus-visible,.seg input:focus-visible+span{outline:2px solid var(--acc);outline-offset:1px}
+.grp{margin-bottom:14px}.grp h3{margin:0 0 6px;font-size:.88rem;font-weight:600}
+.note{font-size:.78rem;color:var(--mute);margin:6px 0 0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+.seg label{cursor:pointer;display:block}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:block;text-align:center;padding:9px 8px;border:1px solid var(--line);border-radius:6px;font-size:.88rem;background:var(--inbg)}
+.seg input:checked+span{background:var(--accsoft);border-color:var(--acc);color:var(--ink);font-weight:600}
+button{font:inherit;font-size:.85rem;padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--inbg);color:var(--ink);cursor:pointer}
+button:hover{border-color:var(--acc)}
+.plot{background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;border:1px solid var(--line);border-radius:6px}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:"IBM Plex Sans",system-ui,sans-serif;fill:var(--ink)}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.res div{border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--inbg)}
+.res small{display:block;color:var(--mute);font-size:.78rem}
+.res b{font:500 1.25rem "IBM Plex Mono",ui-monospace,monospace;color:var(--p);overflow-wrap:anywhere}
+.chip{display:inline-block;margin-top:10px;font-size:.84rem;font-weight:600}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+.err{padding:12px;border:1px solid var(--bad);border-radius:6px;color:var(--bad);font-size:.9rem}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem;min-width:560px}
+th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;color:var(--mute);font-size:.8rem}
+td.v{text-align:right;white-space:nowrap}
+td.f{color:var(--mute);font-size:.82rem}
+tr.s td{background:var(--accsoft);font-weight:600;color:var(--ink)}
+tr.h td{font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>Hitung koordinat titik P</h1>
+<p class="sub">Ikatan ke muka dari dua titik tetap A dan B dengan sudut α di A dan β di B. Isi data, pilih metode, dan hasil beserta langkahnya terhitung otomatis.</p>
+
+<div class="layout">
+<div class="stack">
+ <section class="card">
+  <h2>Data input</h2>
+  <div class="grp"><h3>Titik A</h3><div class="row2">
+   <label class="f">X (m)<input id="xA" type="number" step="any" inputmode="decimal"></label>
+   <label class="f">Y (m)<input id="yA" type="number" step="any" inputmode="decimal"></label></div></div>
+  <div class="grp"><h3>Titik B</h3><div class="row2">
+   <label class="f">X (m)<input id="xB" type="number" step="any" inputmode="decimal"></label>
+   <label class="f">Y (m)<input id="yB" type="number" step="any" inputmode="decimal"></label></div>
+  <div class="grp"><h3>Sudut α (di titik A)</h3><div class="row3">
+   <label class="f">Derajat (°)<input id="aD" type="number" step="any" inputmode="decimal"></label>
+   <label class="f">Menit (′)<input id="aM" type="number" step="any" inputmode="decimal"></label>
+   <label class="f">Detik (″)<input id="aS" type="number" step="any" inputmode="decimal"></label></div></div>
+  <div class="grp"><h3>Sudut β (di titik B)</h3><div class="row3">
+   <label class="f">Derajat (°)<input id="bD" type="number" step="any" inputmode="decimal"></label>
+   <label class="f">Menit (′)<input id="bM" type="number" step="any" inputmode="decimal"></label>
+   <label class="f">Detik (″)<input id="bS" type="number" step="any" inputmode="decimal"></label></div></div>
+  <button id="reset" type="button">Isi dengan data masing-masing</button>
+ </section>
+ <section class="card">
+  <h2>Pilihan pengolahan</h2>
+  <h3 style="margin:0 0 6px;font-size:.88rem">Metode</h3>
+  <div class="seg" id="segM">
+   <label><input type="radio" name="m" value="1" checked><span>1. Sudut-jarak</span></label>
+   <label><input type="radio" name="m" value="2"><span>2. Sudut-sudut</span></label>
+  </div>
+  <h3 style="margin:0 0 6px;font-size:.88rem">Posisi P terhadap garis A → B</h3>
+  <div class="seg" id="segS" style="margin-bottom:0">
+   <label><input type="radio" name="s" value="1" checked><span>Kanan</span></label>
+   <label><input type="radio" name="s" value="-1"><span>Kiri</span></label>
+  </div>
+  <p class="note">Kanan berarti urutan A-B-P searah jarum jam (posisi standar) </p>
+ </section>
+</div>
+
+<div class="stack">
+ <section class="card">
+  <h2>Hasil</h2>
+  <div id="out"></div>
+ </section>
+</div>
+</div>
+
+<section class="card" style="margin-top:16px">
+ <h2>Langkah perhitungan</h2>
+ <div class="tw"><table><thead><tr><th>No</th><th>Keterangan</th><th>Rumus</th><th style="text-align:right">Nilai</th></tr></thead><tbody id="steps"></tbody></table></div>
+</section>
+</main>
+
+<script>
+const DEF={xA:-2206.91,yA:1563.58,xB:3148.26,yB:-4309.31,aD:55,aM:10,aS:34,bD:74,bM:8,bS:56};
+const IDS=Object.keys(DEF);
+const $=id=>document.getElementById(id);
+const rad=d=>d*Math.PI/180,deg=r=>r*180/Math.PI,mod=(a,n)=>((a%n)+n)%n;
+const fx=(v,n)=>v.toLocaleString("id-ID",{minimumFractionDigits:n,maximumFractionDigits:n});
+const m3=v=>fx(v,3)+" m",d6=v=>fx(v,6)+"°";
+const dms=x=>{const s=Math.round(x*360000)/100,d=Math.floor(s/3600),m=Math.floor((s%3600)/60),c=s%60;return d+"° "+m+"′ "+fx(c,2)+"″"};
+const cfg=()=>({m:+document.querySelector('input[name=m]:checked').value,k:+document.querySelector('input[name=s]:checked').value});
+
+function calc(v,k){
+  for(const i of IDS) if(!Number.isFinite(v[i])) return {err:"Lengkapi semua kolom input dengan angka."};
+  if(v.aM<0||v.aM>=60||v.bM<0||v.bM>=60||v.aS<0||v.aS>=60||v.bS<0||v.bS>=60) return {err:"Menit dan detik harus berada di antara 0 dan 59,99."};
+  const al=v.aD+v.aM/60+v.aS/3600,be=v.bD+v.bM/60+v.bS/3600,ga=180-al-be;
+  if(al<=0||be<=0) return {err:"Sudut α dan β harus lebih besar dari 0°."};
+  if(ga<=0) return {err:"Jumlah α + β harus kurang dari 180° agar segitiga ABP terbentuk."};
+  const dx=v.xB-v.xA,dy=v.yB-v.yA;
+  if(dx===0&&dy===0) return {err:"Titik A dan B tidak boleh berimpit."};
+  const az=mod(deg(Math.atan2(dx,dy)),360),dAB=Math.hypot(dx,dy);
+  const dAP=dAB*Math.sin(rad(be))/Math.sin(rad(ga)),dBP=dAB*Math.sin(rad(al))/Math.sin(rad(ga));
+  const azAP=mod(az+k*al,360),azBP=mod(az+180-k*be,360);
+  const dxAP=dAP*Math.sin(rad(azAP)),dyAP=dAP*Math.cos(rad(azAP));
+  const x1=v.xA+dxAP,y1=v.yA+dyAP;
+  const x1k=v.xB+dBP*Math.sin(rad(azBP)),y1k=v.yB+dBP*Math.cos(rad(azBP));
+  const cA=1/Math.tan(rad(al)),cB=1/Math.tan(rad(be)),cS=cA+cB;
+  const x2=(v.xA*cB+v.xB*cA+k*dy)/cS,y2=(v.yA*cB+v.yB*cA-k*dx)/cS;
+  return {al,be,ga,dx,dy,az,dAB,dAP,dBP,azAP,azBP,dxAP,dyAP,x1,y1,x1k,y1k,cA,cB,cS,x2,y2};
+}
+
+function plot(v,r,P,k){
+  const pts=[[v.xA,v.yA,"A"],[v.xB,v.yB,"B"],[P[0],P[1],"P"]];
+  const xs=pts.map(p=>p[0]),ys=pts.map(p=>p[1]);
+  const x0=Math.min(...xs),x1=Math.max(...xs),y0=Math.min(...ys),y1=Math.max(...ys);
+  const W=420,H=320,pad=46,w=Math.max(x1-x0,1e-9),h=Math.max(y1-y0,1e-9);
+  const s=Math.min((W-2*pad)/w,(H-2*pad)/h);
+  const ox=(W-s*w)/2-s*x0,oy=(H-s*h)/2+s*y1;
+  const T=p=>[ox+s*p[0],oy-s*p[1]];
+  const [A,B,Pp]=pts.map(T);
+  const u=(a,b)=>{const dx=b[0]-a[0],dy=b[1]-a[1],l=Math.hypot(dx,dy)||1;return[dx/l,dy/l]};
+  const arc=(O,t1,t2,R,lab)=>{
+    const a=[O[0]+R*t1[0],O[1]+R*t1[1]],b=[O[0]+R*t2[0],O[1]+R*t2[1]];
+    const sw=(t1[0]*t2[1]-t1[1]*t2[0])>0?1:0;
+    let m=[t1[0]+t2[0],t1[1]+t2[1]],ml=Math.hypot(m[0],m[1])||1;m=[m[0]/ml,m[1]/ml];
+    return `<path d="M${a[0]},${a[1]} A${R},${R} 0 0 ${sw} ${b[0]},${b[1]}" fill="none" stroke="var(--acc)" stroke-width="1.6"/>`+
+      `<text x="${O[0]+(R+14)*m[0]}" y="${O[1]+(R+14)*m[1]+4}" text-anchor="middle" font-size="13" font-style="italic" style="fill:var(--acc)">${lab}</text>`;
+  };
+  const dot=(p,l,c,dx,dy)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" style="fill:${c}"/><text x="${p[0]+dx}" y="${p[1]+dy}" font-size="15" font-weight="600" text-anchor="middle">${l}</text>`;
+  const off=(p,o)=>{const m=[(A[0]+B[0]+Pp[0])/3,(A[1]+B[1]+Pp[1])/3],d=u(m,p);return[d[0]*18,d[1]*18+5]};
+  const oA=off(A),oB=off(B),oP=off(Pp);
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sketsa segitiga ABP">
+   <path d="M${A[0]},${A[1]} L${B[0]},${B[1]}" stroke="var(--ink)" stroke-width="2" fill="none"/>
+   <path d="M${A[0]},${A[1]} L${Pp[0]},${Pp[1]} M${B[0]},${B[1]} L${Pp[0]},${Pp[1]}" stroke="var(--p)" stroke-width="1.6" stroke-dasharray="6 4" fill="none"/>
+   ${arc(A,u(A,B),u(A,Pp),28,"α")}${arc(B,u(B,A),u(B,Pp),28,"β")}
+   ${dot(A,"A","var(--ink)",oA[0],oA[1])}${dot(B,"B","var(--ink)",oB[0],oB[1])}${dot(Pp,"P","var(--p)",oP[0],oP[1])}
+   <g transform="translate(${W-26},14)"><path d="M0,26 L0,2 M-5,9 L0,2 L5,9" stroke="var(--mute)" stroke-width="1.5" fill="none"/><text x="0" y="40" font-size="11" text-anchor="middle" style="fill:var(--mute)">U</text></g>
+  </svg>`;
+}
+
+function render(){
+  const v={};for(const i of IDS)v[i]=parseFloat($(i).value);
+  const {m,k}=cfg(),r=calc(v,k),out=$("out"),st=$("steps");
+  if(r.err){out.innerHTML=`<div class="err">${r.err}</div>`;st.innerHTML="";return;}
+  const P=m===1?[r.x1,r.y1]:[r.x2,r.y2];
+  const aC=mod(k*(mod(deg(Math.atan2(P[0]-v.xA,P[1]-v.yA)),360)-r.az),360);
+  const bC=mod(k*(r.az+180-mod(deg(Math.atan2(P[0]-v.xB,P[1]-v.yB)),360)),360);
+  const dm=Math.max(Math.abs(r.x1-r.x2),Math.abs(r.y1-r.y2));
+  const ok=dm<0.001&&Math.abs(aC-r.al)<1e-5&&Math.abs(bC-r.be)<1e-5;
+  out.innerHTML=`<div class="plot">${plot(v,r,P,k)}</div>
+   <div class="res"><div><small>Koordinat xP</small><b>${fx(P[0],3)}</b></div><div><small>Koordinat yP</small><b>${fx(P[1],3)}</b></div></div>
+   <span class="chip ${ok?"ok":"bad"}">${ok?"Kontrol lolos: kedua metode sama dan sudut hitung-balik cocok":"Periksa kembali: hasil kontrol tidak konsisten"}</span>
+   <p class="note">Metode ${m===1?"sudut-jarak":"sudut-sudut"}, P di sisi ${k===1?"kanan":"kiri"} garis A → B. Selisih antar metode: ${fx(dm,6)} m.</p>`;
+  const S=t=>`<tr class="s"><td colspan="4">${t}</td></tr>`;
+  const R=(n,a,f,val)=>`<tr><td>${n}</td><td>${a}</td><td class="f">${f}</td><td class="v">${val}</td></tr>`;
+  let h=S("Langkah 1 – Data dasar (dipakai kedua metode)");
+  h+=R("1.1","Selisih absis Δx","xB − xA",m3(r.dx))+R("1.2","Selisih ordinat Δy","yB − yA",m3(r.dy));
+  h+=R("1.3","Sudut α desimal","d + m/60 + s/3600",d6(r.al))+R("1.4","Sudut β desimal","d + m/60 + s/3600",d6(r.be));
+  h+=R("1.5","Sudut di P (γ)","180° − α − β",d6(r.ga)+"<br>"+dms(r.ga));
+  h+=R("1.6","Azimuth A → B (αAB)","atan(Δx / Δy), sesuai kuadran",d6(r.az)+"<br>"+dms(r.az));
+  h+=R("1.7","Jarak A – B (dAB)","√(Δx² + Δy²)",m3(r.dAB));
+  if(m===1){
+    h+=S("Langkah 2 – Metode sudut-jarak");
+    h+=R("2.1","Jarak A – P","dAB · sin β / sin γ",m3(r.dAP))+R("2.2","Jarak B – P","dAB · sin α / sin γ",m3(r.dBP));
+    h+=R("2.3","Azimuth A → P","αAB "+(k===1?"+":"−")+" α",d6(r.azAP)+"<br>"+dms(r.azAP));
+    h+=R("2.4","Azimuth B → P","αAB + 180° "+(k===1?"−":"+")+" β",d6(r.azBP)+"<br>"+dms(r.azBP));
+    h+=R("2.5","Selisih absis A → P","dAP · sin αAP",m3(r.dxAP))+R("2.6","Selisih ordinat A → P","dAP · cos αAP",m3(r.dyAP));
+    h+=R("2.7","<b>Koordinat xP</b>","xA + ΔxAP","<b>"+m3(r.x1)+"</b>")+R("2.8","<b>Koordinat yP</b>","yA + ΔyAP","<b>"+m3(r.y1)+"</b>");
+    h+=R("2.9","Kontrol xP dari titik B","xB + dBP · sin αBP",m3(r.x1k))+R("2.10","Kontrol yP dari titik B","yB + dBP · cos αBP",m3(r.y1k));
+  }else{
+    h+=S("Langkah 2 – Metode sudut-sudut (rumus kotangen)");
+    h+=R("2.1","cot α","1 / tan α",fx(r.cA,8))+R("2.2","cot β","1 / tan β",fx(r.cB,8))+R("2.3","cot α + cot β","penyebut rumus",fx(r.cS,8));
+    h+=R("2.4","<b>Koordinat xP</b>","(xA·cot β + xB·cot α "+(k===1?"+":"−")+" (yB − yA)) / (cot α + cot β)","<b>"+m3(r.x2)+"</b>");
+    h+=R("2.5","<b>Koordinat yP</b>","(yA·cot β + yB·cot α "+(k===1?"−":"+")+" (xB − xA)) / (cot α + cot β)","<b>"+m3(r.y2)+"</b>");
+  }
+  h+=S("Langkah 3 – Kontrol");
+  h+=R("3.1","Sudut α hitung-balik","dari azimuth A→P dan A→B",d6(aC))+R("3.2","Sudut β hitung-balik","dari azimuth B→A dan B→P",d6(bC));
+  h+=R("3.3","Hasil metode lain","xP, yP",m3(m===1?r.x2:r.x1)+"<br>"+m3(m===1?r.y2:r.y1));
+  st.innerHTML=h;
+}
+
+function fill(){for(const i of IDS)$(i).value=DEF[i];render();}
+document.addEventListener("input",render);
+document.addEventListener("change",render);
+$("reset").addEventListener("click",fill);
+fill();
+</script>
+</body>
+</html>
